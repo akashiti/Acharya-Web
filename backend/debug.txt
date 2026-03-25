@@ -1,0 +1,11 @@
+express loaded
+authRoutes ok
+journalRoutes ok
+productRoutes ok
+categoryRoutes ok
+cartRoutes ok
+orderRoutes ok
+paymentRoutes ok
+cmsRoutes ok
+adminRoutes ok
+done

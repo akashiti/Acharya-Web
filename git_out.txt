@@ -1,0 +1,152 @@
+﻿true
+git : warning: could not 
+open directory 'Application 
+Data/': Permission denied
+At line:1 char:267
++ ... ways_new\git_out.txt" 
+-Append -Encoding utf8; git 
+status 2>&1 | Out-F ...
++                            
+                       
+~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (warning  
+  : could ...rmission deni   
+ ed:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+warning: could not open 
+directory 'Cookies/': 
+Permission denied
+warning: could not open 
+directory 'Documents/My 
+Music/': Permission denied
+warning: could not open 
+directory 'Documents/My 
+Pictures/': Permission denied
+warning: could not open 
+directory 'Documents/My 
+Videos/': Permission denied
+warning: could not open 
+directory 'Local Settings/': 
+Permission denied
+warning: could not open 
+directory 'My Documents/': 
+Permission denied
+warning: could not open 
+directory 'NetHood/': 
+Permission denied
+warning: could not open 
+directory 'PrintHood/': 
+Permission denied
+warning: could not open 
+directory 'Recent/': 
+Permission denied
+warning: could not open 
+directory 'SendTo/': 
+Permission denied
+warning: could not open 
+directory 'Start Menu/': 
+Permission denied
+warning: could not open 
+directory 'Templates/': 
+Permission denied
+On branch main
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../../-1.14-windows.xml
+	../../../.abdm/
+	../../../.antigravity/
+	../../../.cache/
+	../../../.claude/
+	../../../.copilot/
+	../../../.gemini/
+	../../../.git-for-windows-updater
+	../../../.gitconfig
+	../../../.gitignore
+	../../../.node_repl_history
+	../../../.ollama/
+	../../../.python_history
+	../../../.vscode/
+	../../../AppData/
+	../../../Contacts/
+	../../../CrossDevice/
+	../../../Desktop/
+	../../../Downloads/
+	../../../Favorites/
+	../../../Links/
+	../../../NTUSER.DAT
+	../../../NTUSER.DAT{86b38dd7-db44-11ef-b900-e82475fc5cb2}.TxR.0.regtrans-ms
+	../../../NTUSER.DAT{86b38dd7-db44-11ef-b900-e82475fc5cb2}.TxR.1.regtrans-ms
+	../../../NTUSER.DAT{86b38dd7-db44-11ef-b900-e82475fc5cb2}.TxR.2.regtrans-ms
+	../../../NTUSER.DAT{86b38dd7-db44-11ef-b900-e82475fc5cb2}.TxR.blf
+	../../../NTUSER.DAT{86b38dd8-db44-11ef-b900-e82475fc5cb2}.TM.blf
+	../../../NTUSER.DAT{86b38dd8-db44-11ef-b900-e82475fc5cb2}.TMContainer00000000000000000001.regtrans-ms
+	../../../NTUSER.DAT{86b38dd8-db44-11ef-b900-e82475fc5cb2}.TMContainer00000000000000000002.regtrans-ms
+	../../.849C9593-D756-4E56-8D6E-42412F2A707B
+	../AB Download Manager.lnk
+	../ACValhalla.exe
+	../Antigravity.lnk
+	../BCS358A-lab-manual.pdf
+	../CS-PYTHON-REPORT.pdf
+	../Canva.lnk
+	../CapCut.lnk
+	../Employee.txt
+	../Experiment 1 Getting Started with M.txt
+	../GitHub Desktop.lnk
+	../GitHub.lnk
+	../Google Gemini.lnk
+	../Hogwarts Legacy.url
+	../KMPlayer.lnk
+	../Keil uVision4.LNK
+	../LM Studio.lnk
+	../Mathematics Handbook for 3rd Semester 22 Sheme.pdf
+	../NetMirror.lnk
+	../OPERATING SYSTEMS Lab Manual final.pdf
+	../OS Final.pdf
+	../Perplexity.lnk
+	../Person 1 - Chrome.lnk
+	../PlayGTAV.exe
+	../Readdy.lnk
+	../Snapchat.lnk
+	../Ubisoft Connect.lnk
+	../VTU Question Paper of BMATS201 Mathematics-II for CSE Stream Dec-2024-Jan-2025_0001.pdf
+	../Visual Studio Code.lnk
+	../WatchDogs2.exe
+	../YouTube.lnk
+	../ac.pro/
+	../acharya-ways-web/
+	../acharya-website/
+	git_out.txt
+	../daksh/
+	../desktop.ini
+	../discord_game_sdk.dll
+	../movi/
+	../new/
+	../oops/
+	../project (2).zip
+	../project (3).zip
+	../project.zip
+	../project/
+	../../Documents/
+	../../Music/
+	../../Pictures/
+	../../Videos/
+	../../desktop.ini
+	../../qbittorrent.exe
+	../../../Saved Games/
+	../../../Searches/
+	../../../data_materials.json
+	../../../data_profiles.json
+	../../../data_qa.json
+	../../../data_users.json
+	../../../ntuser.dat.LOG1
+	../../../ntuser.dat.LOG2
+	../../../ntuser.ini
+	../../../package-lock.json
+	../../../package.json
+	../../../{
+
+nothing added to commit but untracked files present (use "git add" to track)
