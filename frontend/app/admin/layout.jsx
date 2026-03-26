@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import Navbar from '@/components/Navbar';
 import {
   LayoutDashboard, Package, FolderTree, ShoppingCart, CreditCard,
-  Users, FileEdit, Menu, X, LogOut, ChevronRight, Home
+  Users, FileEdit, Menu, X, ChevronRight
 } from 'lucide-react';
 
 const navItems = [
@@ -43,7 +44,10 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-[#0f0f1a]">
-      {/* Mobile overlay */}
+      {/* Shared site Navbar — shows all nav links + Admin Panel button hidden on admin routes */}
+      <Navbar />
+
+      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-40 lg:hidden"
@@ -53,14 +57,14 @@ export default function AdminLayout({ children }) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50
+        fixed inset-y-0 left-0 z-[35]
         w-64 bg-[#13132a] border-r border-white/5
         transform transition-transform duration-300 ease-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        flex flex-col
+        flex flex-col pt-16
       `}>
         {/* Logo */}
-        <div className="h-16 px-6 flex items-center justify-between border-b border-white/5">
+        <div className="h-14 px-6 flex items-center justify-between border-b border-white/5">
           <Link href="/admin" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
               <span className="text-white font-bold text-sm">A</span>
@@ -75,7 +79,7 @@ export default function AdminLayout({ children }) {
         {/* Nav */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
           {navItems.map(item => {
-            const isActive = pathname === item.href || 
+            const isActive = pathname === item.href ||
               (item.href !== '/admin' && pathname.startsWith(item.href));
             return (
               <Link
@@ -99,46 +103,32 @@ export default function AdminLayout({ children }) {
           })}
         </nav>
 
-        {/* Bottom actions */}
-        <div className="p-3 border-t border-white/5 space-y-1">
-          <Link
-            href="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all"
-          >
-            <Home size={18} className="text-gray-500" />
-            Back to Site
-          </Link>
-          <button
-            onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
+        {/* Admin user info */}
+        <div className="p-4 border-t border-white/5">
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-xs">{user.name?.[0]?.toUpperCase()}</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm text-white font-medium truncate">{user.name}</p>
+              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+          </div>
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Top bar */}
-        <header className="h-16 bg-[#13132a]/80 backdrop-blur-xl border-b border-white/5 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-30">
+      {/* Main content — offset for fixed Navbar (pt-16) and sidebar (lg:pl-64) */}
+      <div className="flex-1 flex flex-col min-h-screen pt-16 lg:pl-64">
+        {/* Mobile top bar (hamburger) */}
+        <div className="lg:hidden h-12 px-4 flex items-center border-b border-white/5 bg-[#13132a]">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-gray-400 hover:text-white p-2 -ml-2"
+            className="text-gray-400 hover:text-white p-1 -ml-1"
           >
             <Menu size={22} />
           </button>
-          <div className="hidden lg:block text-gray-300 text-sm font-medium" />
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm text-white font-medium">{user.name}</p>
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">{user.name?.[0]?.toUpperCase()}</span>
-            </div>
-          </div>
-        </header>
+          <span className="ml-3 text-sm text-gray-300 font-medium">Admin Panel</span>
+        </div>
 
         {/* Page content */}
         <main className="flex-1 p-4 lg:p-8 overflow-y-auto">

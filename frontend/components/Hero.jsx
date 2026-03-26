@@ -16,7 +16,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20"
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10">
@@ -39,16 +39,17 @@ export default function Hero() {
       {/* Content — compact to fit screen */}
       <div ref={heroRef} className="reveal text-center px-4 w-full max-w-3xl mx-auto">
         {/* Brand Logo */}
-        <div className="mb-6 animate-fade-in">
-          <Image
-            src="/images/logo.png"
-            alt="Acharya Aashish Ways — Nothing to Consciousness"
-            width={440}
-            height={176}
-            className="mx-auto w-[220px] sm:w-[300px] lg:w-[380px] h-auto object-contain drop-shadow-lg"
-            style={{ mixBlendMode: 'screen' }}
-            priority
-          />
+        <div className="mb-8 animate-fade-in">
+          <div className="bg-transparent">
+            <Image
+              src="/images/logo.png"
+              alt="Acharya Aashish Ways — Nothing to Consciousness"
+              width={500}
+              height={200}
+              className="mx-auto w-[260px] sm:w-[360px] lg:w-[460px] h-auto object-contain brightness-200 drop-shadow-2xl"
+              priority
+            />
+          </div>
         </div>
 
         <div className="gold-divider mb-6" />

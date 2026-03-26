@@ -1,0 +1,30 @@
+﻿Γ£¿  Acharya Ways ΓÇö Product Seeder
+ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+
+
+≡ƒî▒  Seeding categories...
+   Γå⌐∩╕Å  Already exists: Crystals & Stones
+   Γå⌐∩╕Å  Already exists: Meditation Tools
+   Γå⌐∩╕Å  Already exists: Sacred Books
+   Γå⌐∩╕Å  Already exists: Aromatherapy
+   Γå⌐∩╕Å  Already exists: Malas & Jewelry
+
+≡ƒî▒  Seeding products...
+   Γå⌐∩╕Å  Already exists: Rose Quartz Crystal
+   Γå⌐∩╕Å  Already exists: Amethyst Cluster
+   Γå⌐∩╕Å  Already exists: Black Tourmaline
+   Γå⌐∩╕Å  Already exists: Tibetan Singing Bowl
+   Γå⌐∩╕Å  Already exists: Meditation Cushion (Zafu)
+   Γå⌐∩╕Å  Already exists: Prayer Wheel (Brass)
+   Γå⌐∩╕Å  Already exists: Spiritual Journal ΓÇö Self-Mastery Edition
+   Γå⌐∩╕Å  Already exists: Acharya Aashish ΓÇö Path to Inner Peace
+   Γå⌐∩╕Å  Already exists: Sandalwood Essential Oil (10ml)
+   Γå⌐∩╕Å  Already exists: Palo Santo Bundle (5 sticks)
+   Γå⌐∩╕Å  Already exists: Sacred Incense Set (12 varieties)
+   Γå⌐∩╕Å  Already exists: Rudraksha Mala (108 beads)
+   Γå⌐∩╕Å  Already exists: Lapis Lazuli Mala
+   Γå⌐∩╕Å  Already exists: Om Symbol Pendant (Sterling Silver)
+
+≡ƒÄë  Done! 0 products seeded across 5 categories.
+   Open http://localhost:3000/shop to see them live.
+

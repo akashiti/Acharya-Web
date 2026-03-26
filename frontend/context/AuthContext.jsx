@@ -20,7 +20,10 @@ export function AuthProvider({ children }) {
       api
         .get('/auth/me')
         .then((res) => {
-          setUser(res.data.user);
+          const freshUser = res.data.user;
+          // Always overwrite localStorage with fresh user (includes role)
+          localStorage.setItem('user', JSON.stringify(freshUser));
+          setUser(freshUser);
         })
         .catch(() => {
           // Token invalid, clear

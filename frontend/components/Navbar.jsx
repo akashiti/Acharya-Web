@@ -3,18 +3,19 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, LogOut, ShoppingBag } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Menu, X, LogOut, ShoppingBag, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 
 const navLinks = [
   { label: 'Home', href: '/' },
-  { label: 'About Acharya', href: '#about' },
-  { label: 'Programs', href: '#programs' },
-  { label: 'Wellness Retreat', href: '#retreat' },
-  { label: 'Testimonials', href: '#testimonials' },
-  { label: 'Articles', href: '#articles' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About Acharya', href: '/#about' },
+  { label: 'Programs', href: '/#programs' },
+  { label: 'Wellness Retreat', href: '/#retreat' },
+  { label: 'Testimonials', href: '/#testimonials' },
+  { label: 'Articles', href: '/#articles' },
+  { label: 'Contact', href: '/#contact' },
   { label: 'Shop', href: '/shop' },
 ];
 
@@ -23,6 +24,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -84,7 +87,16 @@ export default function Navbar() {
             </Link>
             {user ? (
               <>
-
+                {/* Admin Panel link — only for admins, hidden when already in admin */}
+                {user.role === 'ADMIN' && !isAdminRoute && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-purple-300 hover:text-white bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 rounded-lg transition-all duration-200"
+                  >
+                    <LayoutDashboard size={14} />
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-ivory/80 hover:text-ivory font-body font-medium transition-colors duration-300 group"
@@ -170,7 +182,17 @@ export default function Navbar() {
             </Link>
             {user ? (
               <>
-
+                {/* Admin Panel link — only for admins, hidden when already in admin */}
+                {user.role === 'ADMIN' && !isAdminRoute && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-purple-300 bg-purple-600/20 border border-purple-500/30 text-lg font-body font-semibold"
+                  >
+                    <LayoutDashboard size={18} />
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}

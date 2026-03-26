@@ -1,0 +1,25 @@
+﻿branch 'main' set up to track 'origin/main'.
+git : To https://github
+.com/akashiti/Acharya-W
+eb.git
+At line:1 char:1
++ git push -u origin 
+main --force 2>&1 | 
+Out-File 
+"c:\Users\Asus\OneDri 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : 
+NotSpecified: (To http 
+   s://gith...Acharya-W
+eb.g    it:String) [], 
+RemoteExc    eption
+    + 
+FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+ + 1e757bb...fc88d30 
+main -> main (forced 
+update)

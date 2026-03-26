@@ -1,1 +1,177 @@
 Initialized empty Git repository in C:/Users/Asus/OneDrive/Desktop/acharya_ways_new/.git/
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/.env.example', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/boot_log.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/adminController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/authController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/cartController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/categoryController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/cmsController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/journalController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/orderController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/paymentController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/controllers/productController.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/debug.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/lib/prisma.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/middleware/authMiddleware.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/prisma/schema.prisma', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/adminRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/authRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/cartRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/categoryRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/cmsRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/journalRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/orderRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/paymentRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/routes/productRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/seed-admin.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/server.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/startup_log.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/test_boot.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/test_startup.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/.env.local.example', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/.eslintrc.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/categories/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/cms/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/layout.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/orders/[id]/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/orders/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/payments/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/products/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/admin/users/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/cart/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/checkout/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/dashboard/journal/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/dashboard/layout.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/dashboard/orders/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/dashboard/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/globals.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/layout.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/login/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/shop/[slug]/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/shop/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/app/signup/page.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/AboutSection.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Articles.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/ContactForm.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Footer.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Gallery.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Hero.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Navbar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Programs.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/Testimonials.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/components/WellnessRetreat.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/context/AuthContext.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/context/CartContext.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/jsconfig.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/next.config.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/postcss.config.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/services/api.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tailwind.config.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'git_result.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'push_to_github.bat', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'setup_git.bat', LF will be replaced by CRLF the next time Git touches it
+[main (root-commit) fc88d30] Initial commit: Acharya Ways project
+ 86 files changed, 15489 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 backend/.env.example
+ create mode 100644 backend/.gitignore
+ create mode 100644 backend/boot_log.txt
+ create mode 100644 backend/controllers/adminController.js
+ create mode 100644 backend/controllers/authController.js
+ create mode 100644 backend/controllers/cartController.js
+ create mode 100644 backend/controllers/categoryController.js
+ create mode 100644 backend/controllers/cmsController.js
+ create mode 100644 backend/controllers/journalController.js
+ create mode 100644 backend/controllers/orderController.js
+ create mode 100644 backend/controllers/paymentController.js
+ create mode 100644 backend/controllers/productController.js
+ create mode 100644 backend/debug.txt
+ create mode 100644 backend/lib/prisma.js
+ create mode 100644 backend/middleware/authMiddleware.js
+ create mode 100644 backend/package-lock.json
+ create mode 100644 backend/package.json
+ create mode 100644 backend/prisma/schema.prisma
+ create mode 100644 backend/prisma_output.txt
+ create mode 100644 backend/routes/adminRoutes.js
+ create mode 100644 backend/routes/authRoutes.js
+ create mode 100644 backend/routes/cartRoutes.js
+ create mode 100644 backend/routes/categoryRoutes.js
+ create mode 100644 backend/routes/cmsRoutes.js
+ create mode 100644 backend/routes/journalRoutes.js
+ create mode 100644 backend/routes/orderRoutes.js
+ create mode 100644 backend/routes/paymentRoutes.js
+ create mode 100644 backend/routes/productRoutes.js
+ create mode 100644 backend/seed-admin.js
+ create mode 100644 backend/server.js
+ create mode 100644 backend/startup_log.txt
+ create mode 100644 backend/startup_output.txt
+ create mode 100644 backend/test_boot.js
+ create mode 100644 backend/test_output.txt
+ create mode 100644 backend/test_startup.js
+ create mode 100644 frontend/.env.local.example
+ create mode 100644 frontend/.eslintrc.json
+ create mode 100644 frontend/app/admin/categories/page.jsx
+ create mode 100644 frontend/app/admin/cms/page.jsx
+ create mode 100644 frontend/app/admin/layout.jsx
+ create mode 100644 frontend/app/admin/orders/[id]/page.jsx
+ create mode 100644 frontend/app/admin/orders/page.jsx
+ create mode 100644 frontend/app/admin/page.jsx
+ create mode 100644 frontend/app/admin/payments/page.jsx
+ create mode 100644 frontend/app/admin/products/page.jsx
+ create mode 100644 frontend/app/admin/users/page.jsx
+ create mode 100644 frontend/app/cart/page.jsx
+ create mode 100644 frontend/app/checkout/page.jsx
+ create mode 100644 frontend/app/dashboard/journal/page.jsx
+ create mode 100644 frontend/app/dashboard/layout.jsx
+ create mode 100644 frontend/app/dashboard/orders/page.jsx
+ create mode 100644 frontend/app/dashboard/page.jsx
+ create mode 100644 frontend/app/globals.css
+ create mode 100644 frontend/app/layout.jsx
+ create mode 100644 frontend/app/login/page.jsx
+ create mode 100644 frontend/app/page.jsx
+ create mode 100644 frontend/app/shop/[slug]/page.jsx
+ create mode 100644 frontend/app/shop/page.jsx
+ create mode 100644 frontend/app/signup/page.jsx
+ create mode 100644 frontend/build_log.txt
+ create mode 100644 frontend/build_output.txt
+ create mode 100644 frontend/components/AboutSection.jsx
+ create mode 100644 frontend/components/Articles.jsx
+ create mode 100644 frontend/components/ContactForm.jsx
+ create mode 100644 frontend/components/Footer.jsx
+ create mode 100644 frontend/components/Gallery.jsx
+ create mode 100644 frontend/components/Hero.jsx
+ create mode 100644 frontend/components/Navbar.jsx
+ create mode 100644 frontend/components/Programs.jsx
+ create mode 100644 frontend/components/Testimonials.jsx
+ create mode 100644 frontend/components/WellnessRetreat.jsx
+ create mode 100644 frontend/context/AuthContext.jsx
+ create mode 100644 frontend/context/CartContext.jsx
+ create mode 100644 frontend/jsconfig.json
+ create mode 100644 frontend/next.config.mjs
+ create mode 100644 frontend/package-lock.json
+ create mode 100644 frontend/package.json
+ create mode 100644 frontend/postcss.config.js
+ create mode 100644 frontend/public/images/logo.png
+ create mode 100644 frontend/services/api.js
+ create mode 100644 frontend/tailwind.config.js
+ create mode 100644 git_out.txt
+ create mode 100644 git_result.txt
+ create mode 100644 push_to_github.bat
+ create mode 100644 setup_git.bat
+To https://github.com/akashiti/Acharya-Web.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/akashiti/Acharya-Web.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[Done] 
