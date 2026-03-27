@@ -4,33 +4,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import api from '@/services/api';
+import { getOrdersByUser } from '@/lib/firestore';
 import { ShoppingBag, ArrowLeft, Package, ChevronRight } from 'lucide-react';
 
-const statusColors = {
-  PENDING:   'bg-yellow-100 text-yellow-700',
-  CONFIRMED: 'bg-blue-100 text-blue-700',
-  SHIPPED:   'bg-indigo-100 text-indigo-700',
-  DELIVERED: 'bg-emerald-100 text-emerald-700',
-  CANCELLED: 'bg-red-100 text-red-600',
-};
+const statusColors  = { PENDING: 'bg-yellow-100 text-yellow-700', CONFIRMED: 'bg-blue-100 text-blue-700', SHIPPED: 'bg-indigo-100 text-indigo-700', DELIVERED: 'bg-emerald-100 text-emerald-700', CANCELLED: 'bg-red-100 text-red-600' };
+const paymentColors = { PAID: 'bg-emerald-100 text-emerald-700', UNPAID: 'bg-red-100 text-red-600' };
 
-const paymentColors = {
-  PAID:   'bg-emerald-100 text-emerald-700',
-  UNPAID: 'bg-red-100 text-red-600',
-};
+function toDate(ts) {
+  if (!ts) return null;
+  if (ts.toDate) return ts.toDate(); // Firestore Timestamp
+  return new Date(ts);
+}
 
 export default function UserOrdersPage() {
-  const { user } = useAuth();
-  const router = useRouter();
-  const [orders, setOrders] = useState([]);
+  const { user }    = useAuth();
+  const router      = useRouter();
+  const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     if (!user) { router.push('/login'); return; }
-    api.get('/orders/my')
-      .then(res => setOrders(res.data.data || []))
+    getOrdersByUser(user.uid)
+      .then(setOrders)
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, [user]);
@@ -38,9 +34,7 @@ export default function UserOrdersPage() {
   if (loading) {
     return (
       <div className="space-y-4 p-2">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-28 rounded-2xl bg-sand/20 animate-pulse" />
-        ))}
+        {[...Array(3)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-sand/20 animate-pulse" />)}
       </div>
     );
   }
@@ -56,10 +50,9 @@ export default function UserOrdersPage() {
     );
   }
 
-  /* ── Order Detail Panel ─────────────────────────── */
+  /* ── Order Detail Panel ──────────────── */
   if (selected) {
     const order = selected;
-    const tax = order.tax || 0;
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
@@ -68,22 +61,20 @@ export default function UserOrdersPage() {
           </button>
           <div>
             <h2 className="text-xl font-heading font-bold text-plum">Order #{order.id.slice(0, 8)}</h2>
-            <p className="text-xs text-earth/40">{new Date(order.createdAt).toLocaleString('en-IN')}</p>
+            <p className="text-xs text-earth/40">{toDate(order.createdAt)?.toLocaleString('en-IN')}</p>
           </div>
-          <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] || 'bg-sand/20 text-earth'}`}>
-            {order.status}
-          </span>
+          <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] || 'bg-sand/20 text-earth'}`}>{order.status}</span>
         </div>
 
         {/* Items */}
         <div className="bg-white rounded-2xl border border-sand/30 overflow-hidden">
           <div className="px-6 py-4 border-b border-sand/20 flex items-center gap-2">
             <Package size={16} className="text-plum/50" />
-            <span className="font-semibold text-plum text-sm">Items ({order.orderItems?.length})</span>
+            <span className="font-semibold text-plum text-sm">Items ({order.items?.length})</span>
           </div>
           <div className="divide-y divide-sand/10">
-            {order.orderItems?.map(item => (
-              <div key={item.id} className="flex items-center justify-between px-6 py-4">
+            {order.items?.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between px-6 py-4">
                 <div>
                   <p className="text-plum font-medium text-sm">{item.title}</p>
                   <p className="text-earth/40 text-xs">Qty: {item.quantity}</p>
@@ -94,7 +85,7 @@ export default function UserOrdersPage() {
           </div>
           <div className="px-6 py-4 border-t border-sand/20 space-y-1 text-sm">
             <div className="flex justify-between text-earth/50"><span>Subtotal</span><span>₹{order.subtotal?.toLocaleString()}</span></div>
-            <div className="flex justify-between text-earth/50"><span>Tax (GST 18%)</span><span>₹{tax.toLocaleString()}</span></div>
+            <div className="flex justify-between text-earth/50"><span>Tax (GST 18%)</span><span>₹{order.tax?.toLocaleString()}</span></div>
             <div className="flex justify-between font-bold text-plum text-base pt-2 border-t border-sand/10 mt-2">
               <span>Total</span><span>₹{order.total?.toLocaleString()}</span>
             </div>
@@ -114,9 +105,7 @@ export default function UserOrdersPage() {
           </div>
           <div className="bg-white rounded-2xl border border-sand/30 p-5">
             <h3 className="font-semibold text-plum text-sm mb-3">Payment</h3>
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${paymentColors[order.paymentStatus] || 'bg-sand/10 text-earth'}`}>
-              {order.paymentStatus}
-            </span>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${paymentColors[order.paymentStatus] || 'bg-sand/10 text-earth'}`}>{order.paymentStatus}</span>
             {order.paymentId && <p className="text-xs text-earth/30 font-mono mt-2">Ref: {order.paymentId}</p>}
           </div>
         </div>
@@ -124,7 +113,7 @@ export default function UserOrdersPage() {
     );
   }
 
-  /* ── Orders List ────────────────────────────── */
+  /* ── Orders List ─────────────────────── */
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -135,24 +124,17 @@ export default function UserOrdersPage() {
 
       <div className="space-y-3">
         {orders.map(order => (
-          <button
-            key={order.id}
-            onClick={() => setSelected(order)}
-            className="w-full text-left bg-white rounded-2xl border border-sand/30 p-5 hover:shadow-soft hover:-translate-y-0.5 transition-all group"
-          >
+          <button key={order.id} onClick={() => setSelected(order)}
+            className="w-full text-left bg-white rounded-2xl border border-sand/30 p-5 hover:shadow-soft hover:-translate-y-0.5 transition-all group">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="text-plum font-semibold text-sm font-mono">#{order.id.slice(0, 8)}</span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${statusColors[order.status] || 'bg-sand/10 text-earth'}`}>
-                    {order.status}
-                  </span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${paymentColors[order.paymentStatus] || 'bg-sand/10 text-earth'}`}>
-                    {order.paymentStatus}
-                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${statusColors[order.status] || 'bg-sand/10 text-earth'}`}>{order.status}</span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${paymentColors[order.paymentStatus] || 'bg-sand/10 text-earth'}`}>{order.paymentStatus}</span>
                 </div>
-                <p className="text-earth/40 text-xs">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-                <p className="text-earth/50 text-xs mt-1">{order.orderItems?.length || 0} item{order.orderItems?.length !== 1 ? 's' : ''}</p>
+                <p className="text-earth/40 text-xs">{toDate(order.createdAt)?.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                <p className="text-earth/50 text-xs mt-1">{order.items?.length || 0} item{order.items?.length !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <span className="text-plum font-bold text-lg">₹{order.total?.toLocaleString()}</span>

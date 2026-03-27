@@ -47,9 +47,13 @@ export default function SignupPage() {
       await register(name, email, password);
       router.push('/login?registered=true');
     } catch (err) {
-      setError(
-        err.response?.data?.message || 'Something went wrong. Please try again.'
-      );
+      if (err.code === 'auth/email-already-in-use') {
+        setError('An account with this email already exists. Try signing in.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password is too weak. Please choose a stronger password.');
+      } else {
+        setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -245,6 +249,17 @@ export default function SignupPage() {
               className="text-gold hover:text-gold-light font-semibold transition-colors"
             >
               Sign in
+            </Link>
+          </p>
+
+          {/* Forgot Password */}
+          <p className="text-center text-ivory/30 text-xs font-body mt-3">
+            Forgot your password?{' '}
+            <Link
+              href="/login"
+              className="text-gold/70 hover:text-gold transition-colors underline-offset-2 hover:underline"
+            >
+              Reset it here
             </Link>
           </p>
         </div>

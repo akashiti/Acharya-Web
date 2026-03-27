@@ -2,67 +2,113 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/services/api';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser]       = useState(null);   // enriched user object (includes role)
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Hydrate user from localStorage on mount
+  // ─── Auth State Listener ───────────────────────────────────────
+  // Fires on every sign-in / sign-out / token refresh
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-      api
-        .get('/auth/me')
-        .then((res) => {
-          const freshUser = res.data.user;
-          // Always overwrite localStorage with fresh user (includes role)
-          localStorage.setItem('user', JSON.stringify(freshUser));
-          setUser(freshUser);
-        })
-        .catch(() => {
-          // Token invalid, clear
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setToken(null);
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Force-refresh token to get latest custom claims (role)
+        const idTokenResult = await firebaseUser.getIdTokenResult(true);
+        const role = idTokenResult.claims.role || 'USER';
+
+        // Enrich user object with Firestore profile data
+        let profile = {};
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) profile = userDoc.data();
+        } catch {
+          // If Firestore read fails, continue with Firebase user data only
+        }
+
+        setUser({
+          id:          firebaseUser.uid,
+          uid:         firebaseUser.uid,
+          email:       firebaseUser.email,
+          name:        firebaseUser.displayName || profile.name || '',
+          avatar:      firebaseUser.photoURL    || profile.avatar || null,
+          phone:       profile.phone  || null,
+          address:     profile.address || null,
+          role,
+          ...profile,
+        });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
-    }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const login = useCallback(async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
-    const { token: newToken, user: newUser } = res.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
-    setToken(newToken);
-    setUser(newUser);
-    return newUser;
-  }, []);
-
+  // ─── Register ──────────────────────────────────────────────────
   const register = useCallback(async (name, email, password) => {
-    const res = await api.post('/auth/register', { name, email, password });
-    return res.data;
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const firebaseUser = credential.user;
+
+    // Set display name in Firebase Auth
+    await updateProfile(firebaseUser, { displayName: name });
+
+    // Create Firestore user document (Cloud Function onUserCreate also does this,
+    // but we set it here too for immediate availability)
+    await setDoc(doc(db, 'users', firebaseUser.uid), {
+      name,
+      email:     email.toLowerCase(),
+      role:      'USER',
+      avatar:    null,
+      phone:     null,
+      address:   null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return firebaseUser;
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setToken(null);
+  // ─── Login ─────────────────────────────────────────────────────
+  const login = useCallback(async (email, password) => {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    // onAuthStateChanged will update the user state automatically
+    return credential.user;
+  }, []);
+
+  // ─── Logout ────────────────────────────────────────────────────
+  const logout = useCallback(async () => {
+    await signOut(auth);
     setUser(null);
     router.push('/');
   }, [router]);
 
+  // ─── Reset Password ────────────────────────────────────────────
+  const resetPassword = useCallback(async (email) => {
+    await sendPasswordResetEmail(auth, email);
+  }, []);
+
+  // ─── Get ID Token (for calling Cloud Functions) ────────────────
+  const getIdToken = useCallback(async () => {
+    if (!auth.currentUser) return null;
+    return auth.currentUser.getIdToken();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, getIdToken, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

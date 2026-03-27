@@ -1,0 +1,20 @@
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+
+> Build error occurred
+Error: Page "/admin/orders/[id]" is missing "generateStaticParams()" so it cannot be used with "output: export" config.
+    at C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\build\index.js:1297:59
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Span.traceAsyncFn (C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async Promise.all (index 6)
+    at async C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\build\index.js:1175:17
+    at async Span.traceAsyncFn (C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\build\index.js:1098:124
+    at async Span.traceAsyncFn (C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async build (C:\Users\Asus\OneDrive\Desktop\acharya_ways_new\frontend\node_modules\next\dist\build\index.js:368:9)

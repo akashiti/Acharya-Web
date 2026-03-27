@@ -1,0 +1,99 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ──────────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuth() && request.auth.token.role == 'ADMIN';
+    }
+
+    // ─── Users ────────────────────────────────────────────────────
+    // Users can read/update their own profile. Admins can read all.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─── Products ─────────────────────────────────────────────────
+    // Public read for published products. Admin can write.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Categories ───────────────────────────────────────────────
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Cart Items ───────────────────────────────────────────────
+    // Stored as cartItems/{uid}/items/{productId}
+    match /cartItems/{uid}/items/{productId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ─── Orders ───────────────────────────────────────────────────
+    // Users can create own orders and read own orders. Admin can read/write all.
+    match /orders/{orderId} {
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─── Journals ─────────────────────────────────────────────────
+    match /journals/{journalId} {
+      allow read, write: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ─── Articles ─────────────────────────────────────────────────
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Testimonials ─────────────────────────────────────────────
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Contacts ─────────────────────────────────────────────────
+    // Anyone (even unauthenticated) can submit a contact form.
+    match /contacts/{contactId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ─── Banners ──────────────────────────────────────────────────
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Site Content (CMS) ───────────────────────────────────────
+    match /siteContent/{section} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Courses ──────────────────────────────────────────────────
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

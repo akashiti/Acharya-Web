@@ -6,19 +6,27 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Mail, Lock, Eye, EyeOff, ArrowRight, Loader2,
-  ShieldCheck, User
+  ShieldCheck, User, KeyRound, CheckCircle2, X,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
-  const [role, setRole]               = useState('user');   // 'user' | 'admin'
+  const [role, setRole]               = useState('user');
   const [email, setEmail]             = useState('');
   const [password, setPassword]       = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]             = useState('');
   const [loading, setLoading]         = useState(false);
-  const { login }  = useAuth();
-  const router     = useRouter();
+
+  // ── Forgot-password state ──────────────────────────────
+  const [showForgot, setShowForgot]       = useState(false);
+  const [resetEmail, setResetEmail]       = useState('');
+  const [resetSent, setResetSent]         = useState(false);
+  const [resetLoading, setResetLoading]   = useState(false);
+  const [resetError, setResetError]       = useState('');
+
+  const { login, resetPassword } = useAuth();
+  const router = useRouter();
 
   const handleRoleSwitch = (newRole) => {
     setRole(newRole);
@@ -31,12 +39,9 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
       const loggedInUser = await login(email, password);
-
       if (role === 'admin') {
-        // User selected Admin tab — make sure they actually ARE an admin
         if (loggedInUser.role !== 'ADMIN') {
           setError('Access denied. You do not have admin privileges.');
           setLoading(false);
@@ -44,21 +49,47 @@ export default function LoginPage() {
         }
         router.push('/admin');
       } else {
-        // Normal user
         if (loggedInUser.role === 'ADMIN') {
-          // Admin logged in via user tab → still send them to admin
           router.push('/admin');
         } else {
           router.push('/dashboard');
         }
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message || 'Invalid email or password. Please try again.'
-      );
+      setError(err.message?.includes('invalid-credential') || err.message?.includes('wrong-password')
+        ? 'Invalid email or password. Please try again.'
+        : err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // ── Forgot password submit ─────────────────────────────
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setResetError('');
+    setResetLoading(true);
+    try {
+      await resetPassword(resetEmail);
+      setResetSent(true);
+    } catch (err) {
+      if (err.code === 'auth/user-not-found') {
+        setResetError('No account found with that email address.');
+      } else if (err.code === 'auth/invalid-email') {
+        setResetError('Please enter a valid email address.');
+      } else {
+        setResetError('Something went wrong. Please try again.');
+      }
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const closeForgot = () => {
+    setShowForgot(false);
+    setResetEmail('');
+    setResetSent(false);
+    setResetError('');
   };
 
   const isAdmin = role === 'admin';
@@ -95,7 +126,6 @@ export default function LoginPage() {
 
         {/* ── Role Selector Tabs ── */}
         <div className="flex rounded-2xl overflow-hidden border border-ivory/10 mb-6 bg-ivory/5">
-          {/* User Tab */}
           <button
             type="button"
             id="tab-user"
@@ -109,8 +139,6 @@ export default function LoginPage() {
             <User size={16} />
             User Login
           </button>
-
-          {/* Admin Tab */}
           <button
             type="button"
             id="tab-admin"
@@ -183,6 +211,20 @@ export default function LoginPage() {
               </button>
             </div>
 
+            {/* Forgot Password link — only for user tab */}
+            {!isAdmin && (
+              <div className="flex justify-end -mt-1">
+                <button
+                  type="button"
+                  id="forgot-password-btn"
+                  onClick={() => { setShowForgot(true); setResetEmail(email); }}
+                  className="text-xs text-gold/70 hover:text-gold font-body transition-colors underline-offset-2 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
+
             {/* Submit */}
             <button
               id="login-submit"
@@ -218,7 +260,7 @@ export default function LoginPage() {
                 <div className="flex-1 h-px bg-ivory/10" />
               </div>
               <p className="text-center text-ivory/50 text-sm font-body">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link
                   href="/signup"
                   className="text-gold hover:text-gold-light font-semibold transition-colors"
@@ -247,6 +289,123 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════════════
+          Forgot Password Modal
+      ════════════════════════════════════════════════════════════ */}
+      {showForgot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={closeForgot}
+          />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-sm glass-card bg-[#1a0a00]/95 border-ivory/10 p-8 shadow-elevated animate-fade-in">
+            {/* Close */}
+            <button
+              type="button"
+              onClick={closeForgot}
+              className="absolute top-4 right-4 text-ivory/30 hover:text-ivory/70 transition-colors"
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+
+            {!resetSent ? (
+              <>
+                {/* Header */}
+                <div className="flex flex-col items-center text-center mb-6">
+                  <div className="w-12 h-12 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-3">
+                    <KeyRound size={22} className="text-gold" />
+                  </div>
+                  <h2 className="text-xl font-heading font-bold text-ivory">Forgot Password?</h2>
+                  <p className="text-ivory/45 text-sm font-body mt-1">
+                    Enter your email and we&apos;ll send you a reset link.
+                  </p>
+                </div>
+
+                {resetError && (
+                  <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs font-body">
+                    {resetError}
+                  </div>
+                )}
+
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div className="relative">
+                    <Mail size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/30" />
+                    <input
+                      id="reset-email"
+                      type="email"
+                      placeholder="Your email address"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      className="w-full bg-ivory/5 border border-ivory/10 rounded-xl pl-11 pr-4 py-3 text-ivory placeholder:text-ivory/30 font-body text-sm outline-none focus:border-gold/50 transition-all duration-300"
+                      required
+                      autoFocus
+                    />
+                  </div>
+
+                  <button
+                    id="reset-submit"
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full btn-gold !py-3.5 text-sm gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <KeyRound size={16} />
+                        Send Reset Link
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <p className="text-center text-ivory/30 text-xs font-body mt-4">
+                  Remember your password?{' '}
+                  <button
+                    type="button"
+                    onClick={closeForgot}
+                    className="text-gold hover:text-gold-light transition-colors"
+                  >
+                    Sign in
+                  </button>
+                </p>
+              </>
+            ) : (
+              /* Success state */
+              <div className="flex flex-col items-center text-center py-2">
+                <div className="w-14 h-14 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-4">
+                  <CheckCircle2 size={28} className="text-green-400" />
+                </div>
+                <h2 className="text-xl font-heading font-bold text-ivory mb-2">Email Sent!</h2>
+                <p className="text-ivory/50 text-sm font-body mb-1">
+                  We sent a password reset link to:
+                </p>
+                <p className="text-gold font-semibold text-sm font-body mb-5 break-all">
+                  {resetEmail}
+                </p>
+                <p className="text-ivory/35 text-xs font-body mb-6">
+                  Check your inbox (and spam folder). The link expires in 1 hour.
+                </p>
+                <button
+                  type="button"
+                  onClick={closeForgot}
+                  className="btn-gold !py-3 text-sm w-full"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

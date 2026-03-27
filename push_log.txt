@@ -1,0 +1,104 @@
+﻿git : warning: in the 
+working copy of 'backen
+d/prisma/schema.prisma'
+, LF will be replaced 
+by CRLF the next time 
+Git touches it
+At line:1 char:1
++ git add -A 2>&1 | 
+Out-File -FilePath 
+"push_log.txt" 
+-Encoding utf8; g ...
++ ~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (warning: in t   
+ he... Git touches     
+it:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+warning: in the 
+working copy of 'fronte
+nd/app/admin/layout.jsx
+', LF will be replaced 
+by CRLF the next time 
+Git touches it
+warning: in the 
+working copy of 'fronte
+nd/app/admin/products/p
+age.jsx', LF will be 
+replaced by CRLF the 
+next time Git touches 
+it
+warning: in the 
+working copy of 'fronte
+nd/components/Hero.jsx'
+, LF will be replaced 
+by CRLF the next time 
+Git touches it
+warning: in the 
+working copy of 'fronte
+nd/components/Navbar.js
+x', LF will be 
+replaced by CRLF the 
+next time Git touches 
+it
+warning: in the 
+working copy of 'fronte
+nd/context/AuthContext.
+jsx', LF will be 
+replaced by CRLF the 
+next time Git touches 
+it
+warning: in the 
+working copy of 
+'git_result.txt', LF 
+will be replaced by 
+CRLF the next time Git 
+touches it
+warning: in the 
+working copy of 'backen
+d/seed-products.js', 
+LF will be replaced by 
+CRLF the next time Git 
+touches it
+warning: in the 
+working copy of 
+'render.yaml', LF will 
+be replaced by CRLF 
+the next time Git 
+touches it
+[main a592947] feat: switch to PostgreSQL for production, add render.yaml
+ 13 files changed, 772 insertions(+), 106 deletions(-)
+ create mode 100644 backend/seed-products.js
+ create mode 100644 backend/seed_out.txt
+ create mode 100644 backend/seed_output.txt
+ create mode 100644 push_log.txt
+ create mode 100644 push_result.txt
+ create mode 100644 render.yaml
+git : To https://github
+.com/akashiti/Acharya-W
+eb.git
+At line:1 char:209
++ ... sh_log.txt" 
+-Append -Encoding 
+utf8; git push origin 
+main 2>&1 | Out-F ...
++                      
+                   ~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (To https://gi   
+ th...Acharya-Web.g    
+it:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+   fc88d30..a592947  
+main -> main

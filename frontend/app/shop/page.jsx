@@ -1,43 +1,64 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import api from '@/services/api';
 import { useCart } from '@/context/CartContext';
-import { Search, SlidersHorizontal, ShoppingBag, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getProducts, getCategories } from '@/lib/firestore';
+import { Search, ShoppingBag, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+
+const PAGE_SIZE = 12;
 
 export default function ShopPage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts]     = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
-  const [sort, setSort] = useState('newest');
-  const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({ pages: 1 });
-  const { addToCart } = useCart();
-  const [adding, setAdding] = useState(null);
+  const [loading, setLoading]       = useState(true);
+  const [search, setSearch]         = useState('');
+  const [category, setCategory]     = useState('');
+  const [sort, setSort]             = useState('newest');
+  const [page, setPage]             = useState(1);
+  const { addToCart }               = useCart();
+  const [adding, setAdding]         = useState(null);
 
+  // Load categories once
+  useEffect(() => {
+    getCategories().then(setCategories).catch(console.error);
+  }, []);
+
+  // Load products whenever filters change
   useEffect(() => {
     setLoading(true);
-    api.get('/products', { params: { page, limit: 12, category: category || undefined, search: search || undefined, sort } })
-      .then(res => {
-        setProducts(res.data.data);
-        setPagination(res.data.pagination);
-      })
+    getProducts({
+      categoryId:    category || undefined,
+      publishedOnly: true,
+    })
+      .then(data => setProducts(data))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [page, category, search, sort]);
+  }, [category]);
 
-  useEffect(() => {
-    api.get('/categories').then(res => setCategories(res.data.data)).catch(console.error);
-  }, []);
+  // Client-side search + sort
+  const filtered = useMemo(() => {
+    let list = [...products];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(p =>
+        p.title?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      );
+    }
+    if (sort === 'price_asc')  list.sort((a, b) => (a.salePrice || a.price) - (b.salePrice || b.price));
+    if (sort === 'price_desc') list.sort((a, b) => (b.salePrice || b.price) - (a.salePrice || a.price));
+    if (sort === 'title')      list.sort((a, b) => a.title.localeCompare(b.title));
+    // newest: already ordered by createdAt desc from Firestore
+    return list;
+  }, [products, search, sort]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleAddToCart = async (productId) => {
     setAdding(productId);
-    try {
-      await addToCart(productId, 1);
-    } catch {}
+    try { await addToCart(productId, 1); } catch {}
     setTimeout(() => setAdding(null), 800);
   };
 
@@ -56,19 +77,17 @@ export default function ShopPage() {
       <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
         {/* Filters Bar */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          {/* Search */}
           <div className="relative flex-1">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
-            <input type="text" placeholder="Search products..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
+            <input type="text" placeholder="Search products..." value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1); }}
               className="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/15 rounded-2xl text-ivory text-sm placeholder:text-ivory/30 focus:outline-none focus:border-gold/50 transition-all" />
           </div>
-          {/* Category */}
           <select value={category} onChange={e => { setCategory(e.target.value); setPage(1); }}
             className="px-4 py-3 bg-white/10 border border-white/15 rounded-2xl text-ivory text-sm focus:outline-none focus:border-gold/50">
             <option value="" className="text-plum">All Categories</option>
             {categories.map(c => <option key={c.id} value={c.id} className="text-plum">{c.name}</option>)}
           </select>
-          {/* Sort */}
           <select value={sort} onChange={e => setSort(e.target.value)}
             className="px-4 py-3 bg-white/10 border border-white/15 rounded-2xl text-ivory text-sm focus:outline-none focus:border-gold/50">
             <option value="newest" className="text-plum">Newest</option>
@@ -92,7 +111,7 @@ export default function ShopPage() {
               </div>
             ))}
           </div>
-        ) : products.length === 0 ? (
+        ) : paginated.length === 0 ? (
           <div className="text-center py-20">
             <ShoppingBag size={48} className="mx-auto text-ivory/20 mb-4" />
             <p className="text-ivory/50 text-lg">No products found</p>
@@ -100,11 +119,11 @@ export default function ShopPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map(product => {
-              const images = (() => { try { return typeof product.images === 'string' ? JSON.parse(product.images) : product.images; } catch { return []; } })();
+            {paginated.map(product => {
+              const images = Array.isArray(product.images) ? product.images : [];
               return (
                 <div key={product.id} className="bg-white rounded-3xl overflow-hidden border border-sand/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                  <Link href={`/shop/${product.slug}`}>
+                  <Link href={`/shop/detail?slug=${product.slug}`}>
                     <div className="relative h-56 bg-sand/10 overflow-hidden">
                       {images[0] ? (
                         <img src={images[0]} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -124,8 +143,7 @@ export default function ShopPage() {
                     </div>
                   </Link>
                   <div className="p-5">
-                    <p className="text-xs text-gold font-medium mb-1">{product.category?.name}</p>
-                    <Link href={`/shop/${product.slug}`}>
+                    <Link href={`/shop/detail?slug=${product.slug}`}>
                       <h3 className="text-plum font-semibold text-lg mb-2 line-clamp-1 hover:text-purple transition-colors">{product.title}</h3>
                     </Link>
                     <p className="text-earth/50 text-sm line-clamp-2 mb-4">{product.description}</p>
@@ -156,13 +174,13 @@ export default function ShopPage() {
         )}
 
         {/* Pagination */}
-        {pagination.pages > 1 && (
+        {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
               className="p-2 rounded-xl border border-sand/30 text-plum hover:bg-sand/20 disabled:opacity-30 transition-colors">
               <ChevronLeft size={18} />
             </button>
-            {[...Array(pagination.pages)].map((_, i) => (
+            {[...Array(totalPages)].map((_, i) => (
               <button key={i} onClick={() => setPage(i + 1)}
                 className={`w-10 h-10 rounded-xl text-sm font-medium transition-colors ${
                   page === i + 1 ? 'bg-plum text-ivory' : 'border border-sand/30 text-plum hover:bg-sand/20'
@@ -170,7 +188,7 @@ export default function ShopPage() {
                 {i + 1}
               </button>
             ))}
-            <button onClick={() => setPage(p => Math.min(pagination.pages, p + 1))} disabled={page === pagination.pages}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
               className="p-2 rounded-xl border border-sand/30 text-plum hover:bg-sand/20 disabled:opacity-30 transition-colors">
               <ChevronRight size={18} />
             </button>

@@ -1,40 +1,47 @@
-import axios from 'axios';
+// ─── Firebase Cloud Functions Callable Wrapper ────────────────────────────────
+// This replaces the old axios-based api.js.
+// Import and use these helpers instead of direct fetch/axios calls.
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+import { httpsCallable } from 'firebase/functions';
+import { functions, auth } from '@/lib/firebase';
 
-// Attach JWT token to every request
-api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+// ─── Generic helper: call a callable function ─────────────────────────────────
+export async function callFunction(name, data = {}) {
+  const fn = httpsCallable(functions, name);
+  const result = await fn(data);
+  return result.data;
+}
+
+// ─── Generic helper: call an HTTPS (non-callable) function with auth token ───
+export async function callHttpFunction(url, body = {}) {
+  const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Request failed');
   }
-  return config;
-});
+  return res.json();
+}
 
-// Handle 401 responses globally
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      // Only redirect if not already on login/signup page
-      if (
-        !window.location.pathname.includes('/login') &&
-        !window.location.pathname.includes('/signup')
-      ) {
-        window.location.href = '/login';
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+// ─── Order Functions ──────────────────────────────────────────────────────────
+export const createOrder         = (data) => callFunction('createOrder', data);
 
-export default api;
+// These use the HTTPS-triggered functions (for Razorpay which needs external calls)
+const FUNCTIONS_BASE = process.env.NEXT_PUBLIC_FUNCTIONS_BASE_URL;
+export const createRazorpayOrder = (data) => callHttpFunction(`${FUNCTIONS_BASE}/createRazorpayOrder`, data);
+export const verifyPayment       = (data) => callHttpFunction(`${FUNCTIONS_BASE}/verifyRazorpayPayment`, data);
+
+// ─── Admin Functions ──────────────────────────────────────────────────────────
+export const adminGetUsers    = (data) => callFunction('adminGetUsers', data);
+export const adminUpdateUser  = (data) => callFunction('adminUpdateUser', data);
+export const setAdminClaim    = (data) => callFunction('setAdminClaim', data);
+
+// ─── Contact ──────────────────────────────────────────────────────────────────
+export const submitContact    = (data) => callFunction('submitContact', data);

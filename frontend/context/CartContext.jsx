@@ -2,95 +2,107 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import api from '@/services/api';
+import {
+  subscribeToCart,
+  addToCart as fsAddToCart,
+  removeFromCart as fsRemoveFromCart,
+  clearCart as fsClearCart,
+} from '@/lib/firestore';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-  const { user, token } = useAuth();
-  const [items, setItems] = useState([]);
+  const { user }           = useAuth();
+  const [items, setItems]  = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Sync cart from backend when user is logged in
-  const fetchCart = useCallback(async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const res = await api.get('/cart');
-      setItems(res.data.data || []);
-    } catch {
-      // Silently fail
-    }
-    setLoading(false);
-  }, [token]);
-
+  // ─── Real-time cart sync via Firestore onSnapshot ─────────────────────────
   useEffect(() => {
-    if (token) fetchCart();
-    else setItems([]);
-  }, [token, fetchCart]);
+    if (!user?.uid) {
+      // Guest: load from localStorage
+      try {
+        const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        setItems(localCart);
+      } catch {
+        setItems([]);
+      }
+      return;
+    }
 
+    setLoading(true);
+    // subscribeToCart returns an unsubscribe function
+    const unsubscribe = subscribeToCart(user.uid, (enrichedItems) => {
+      setItems(enrichedItems);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user?.uid]);
+
+  // ─── Add to Cart ──────────────────────────────────────────────────────────
   const addToCart = useCallback(async (productId, quantity = 1) => {
-    if (!token) {
-      // Use local storage for guests
+    if (!user?.uid) {
+      // Guest cart in localStorage
       const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const existing = localCart.find(i => i.productId === productId);
+      const existing  = localCart.find(i => i.productId === productId);
       if (existing) existing.quantity = quantity;
       else localCart.push({ productId, quantity });
       localStorage.setItem('cart', JSON.stringify(localCart));
       setItems(localCart);
       return;
     }
-    try {
-      await api.post('/cart', { productId, quantity });
-      await fetchCart();
-    } catch (err) {
-      throw err;
-    }
-  }, [token, fetchCart]);
+    await fsAddToCart(user.uid, productId, quantity);
+    // State is updated automatically by the onSnapshot listener
+  }, [user?.uid]);
 
+  // ─── Remove from Cart ─────────────────────────────────────────────────────
   const removeFromCart = useCallback(async (productId) => {
-    if (!token) {
-      const localCart = JSON.parse(localStorage.getItem('cart') || '[]').filter(i => i.productId !== productId);
+    if (!user?.uid) {
+      const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
+        .filter(i => i.productId !== productId);
       localStorage.setItem('cart', JSON.stringify(localCart));
       setItems(localCart);
       return;
     }
-    await api.delete(`/cart/${productId}`);
-    await fetchCart();
-  }, [token, fetchCart]);
+    await fsRemoveFromCart(user.uid, productId);
+  }, [user?.uid]);
 
+  // ─── Update Quantity ──────────────────────────────────────────────────────
   const updateQuantity = useCallback(async (productId, quantity) => {
     if (quantity < 1) return removeFromCart(productId);
-    if (!token) {
+    if (!user?.uid) {
       const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
       const item = localCart.find(i => i.productId === productId);
       if (item) item.quantity = quantity;
       localStorage.setItem('cart', JSON.stringify(localCart));
-      setItems(localCart);
+      setItems([...localCart]);
       return;
     }
-    await api.post('/cart', { productId, quantity });
-    await fetchCart();
-  }, [token, fetchCart, removeFromCart]);
+    await fsAddToCart(user.uid, productId, quantity);
+  }, [user?.uid, removeFromCart]);
 
+  // ─── Clear Cart ───────────────────────────────────────────────────────────
   const clearCart = useCallback(async () => {
-    if (!token) {
+    if (!user?.uid) {
       localStorage.removeItem('cart');
       setItems([]);
       return;
     }
-    await api.delete('/cart/clear');
-    setItems([]);
-  }, [token]);
+    await fsClearCart(user.uid);
+  }, [user?.uid]);
 
+  // ─── Derived Values ───────────────────────────────────────────────────────
   const cartCount = items.reduce((sum, i) => sum + (i.quantity || 1), 0);
   const cartTotal = items.reduce((sum, i) => {
-    const price = i.product ? (i.product.salePrice || i.product.price) : 0;
+    const price = i.product ? (i.product.salePrice || i.product.price || 0) : 0;
     return sum + price * (i.quantity || 1);
   }, 0);
 
   return (
-    <CartContext.Provider value={{ items, loading, cartCount, cartTotal, addToCart, removeFromCart, updateQuantity, clearCart, fetchCart }}>
+    <CartContext.Provider value={{
+      items, loading, cartCount, cartTotal,
+      addToCart, removeFromCart, updateQuantity, clearCart,
+    }}>
       {children}
     </CartContext.Provider>
   );
