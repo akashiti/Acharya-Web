@@ -108,7 +108,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
             <Image
-              src="/images/logo.png"
+              src="/images/ChatGPT Image Mar 25, 2026, 02_08_28 AM-Photoroom (1).png"
               alt="Acharya Aashish Ways"
               width={220}
               height={62}

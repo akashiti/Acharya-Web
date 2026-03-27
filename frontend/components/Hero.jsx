@@ -42,11 +42,11 @@ export default function Hero() {
         <div className="mb-8 animate-fade-in">
           <div className="bg-transparent">
             <Image
-              src="/images/logo.png"
+              src="/images/ChatGPT Image Mar 25, 2026, 01_53_23 AM-Photoroom (1).png"
               alt="Acharya Aashish Ways — Nothing to Consciousness"
               width={500}
               height={200}
-              className="mx-auto w-[260px] sm:w-[360px] lg:w-[460px] h-auto object-contain brightness-200 drop-shadow-2xl"
+              className="mx-auto w-[260px] sm:w-[360px] lg:w-[460px] h-auto object-contain drop-shadow-2xl"
               priority
             />
           </div>

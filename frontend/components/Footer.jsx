@@ -43,7 +43,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="inline-block mb-6 group">
               <Image
-                src="/images/logo.png"
+                src="/images/ChatGPT Image Mar 25, 2026, 02_08_28 AM-Photoroom (1).png"
                 alt="Acharya Aashish Ways"
                 width={160}
                 height={45}

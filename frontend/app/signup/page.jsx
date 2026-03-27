@@ -76,7 +76,7 @@ export default function SignupPage() {
         <div className="text-center mb-10">
           <Link href="/" className="inline-block mb-8">
             <Image
-              src="/images/logo.png"
+              src="/images/ChatGPT Image Mar 25, 2026, 02_08_28 AM-Photoroom (1).png"
               alt="Acharya Aashish Ways"
               width={220}
               height={62}

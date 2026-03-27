@@ -42,21 +42,20 @@ export default function Navbar() {
     <>
       <header
         id="main-navbar"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'py-2 bg-plum/95 backdrop-blur-xl shadow-elevated'
-            : 'py-4 bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? 'py-2 bg-plum/95 backdrop-blur-xl shadow-elevated'
+          : 'py-4 bg-transparent'
+          }`}
       >
         <div className="section-wrapper flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <Image
-              src="/images/logo.png"
+              src="/images/ChatGPT Image Mar 25, 2026, 02_08_28 AM-Photoroom (1).png"
               alt="Acharya Aashish Ways"
-              width={180}
-              height={50}
-              className="h-10 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
+              width={200}
+              height={80}
+              className="h-20 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
               priority
             />
           </Link>
@@ -145,11 +144,10 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-plum/98 backdrop-blur-2xl transition-all duration-500 lg:hidden ${
-          mobileOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-40 bg-plum/98 backdrop-blur-2xl transition-all duration-500 lg:hidden ${mobileOpen
+          ? 'opacity-100 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'
+          }`}
       >
         <nav className="flex flex-col items-center justify-center h-full gap-2">
           {navLinks.map((link, i) => (
