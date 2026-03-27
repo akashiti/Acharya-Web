@@ -3,36 +3,46 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
+    // ─── Helper: validate image uploads ────────────────────────
+    function isValidImage() {
+      return request.resource.size < 5 * 1024 * 1024
+          && request.resource.contentType.matches('image/.*');
+    }
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.role == 'ADMIN';
+    }
+
     // ─── Product Images ───────────────────────────────────────────
-    // Public read. Admin-only write.
+    // Public read. Admin-only write. Max 5MB, images only.
     match /products/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.role == 'ADMIN';
+      allow write: if isAdmin() && isValidImage();
     }
 
     // ─── Category Images ──────────────────────────────────────────
     match /categories/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.role == 'ADMIN';
+      allow write: if isAdmin() && isValidImage();
     }
 
     // ─── Banner Images ────────────────────────────────────────────
     match /banners/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.role == 'ADMIN';
+      allow write: if isAdmin() && isValidImage();
     }
 
     // ─── Article Images ───────────────────────────────────────────
     match /articles/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.role == 'ADMIN';
+      allow write: if isAdmin() && isValidImage();
     }
 
     // ─── User Avatars ─────────────────────────────────────────────
-    // Each user can only write their own avatar.
+    // Each user can only write their own avatar. Max 5MB, images only.
     match /avatars/{uid}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == uid;
+      allow write: if request.auth != null && request.auth.uid == uid && isValidImage();
     }
   }
 }

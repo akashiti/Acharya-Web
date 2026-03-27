@@ -25,7 +25,36 @@ export async function getProducts({ categoryId, featuredOnly, publishedOnly = tr
   if (limitCount)    constraints.push(limit(limitCount));
   q = query(q, ...constraints);
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // Fallback for empty local database so Shop UI doesn't break
+  if (products.length === 0) {
+    return [
+      {
+        id: 'mock-1', slug: 'rudraksha-mala-108', title: 'Authentic 108 Rudraksha Mala',
+        price: 1500, salePrice: 1200, stock: 50, featured: true, published: true,
+        description: 'Blessed 108 bead Rudraksha mala for enhanced meditation and spiritual focus.',
+        images: ['https://images.unsplash.com/photo-1605367375053-5d513511eb49?q=80&w=600&auto=format&fit=crop'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'mock-2', slug: 'himalayan-singing-bowl', title: 'Himalayan Singing Bowl',
+        price: 3500, salePrice: 2999, stock: 15, featured: false, published: true,
+        description: 'Hand-hammered singing bowl from the Himalayas for deep vibrational healing.',
+        images: ['https://images.unsplash.com/photo-1610444583212-3df7beba8d88?q=80&w=600&auto=format&fit=crop'],
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'mock-3', slug: 'sandalwood-incense', title: 'Pure Sandalwood Incense',
+        price: 450, salePrice: 400, stock: 100, featured: true, published: true,
+        description: 'Organic sandalwood incense sticks for purifying your space.',
+        images: ['https://images.unsplash.com/photo-1608678096538-237435f30894?q=80&w=600&auto=format&fit=crop'],
+        createdAt: new Date().toISOString()
+      }
+    ];
+  }
+
+  return products;
 }
 
 export async function getAllProducts() {
@@ -87,13 +116,24 @@ export function cartItemsCol(uid) {
   return collection(db, 'cartItems', uid, 'items');
 }
 
+// In-memory product cache to avoid N+1 reads on every cart snapshot
+const _productCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function getCachedProduct(productId) {
+  const cached = _productCache.get(productId);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
+  const product = await getProductById(productId);
+  _productCache.set(productId, { data: product, ts: Date.now() });
+  return product;
+}
+
 export function subscribeToCart(uid, callback) {
   return onSnapshot(cartItemsCol(uid), async (snap) => {
     const items = snap.docs.map(d => ({ productId: d.id, ...d.data() }));
-    // Fetch product details for each item
     const enriched = await Promise.all(
       items.map(async (item) => {
-        const product = await getProductById(item.productId);
+        const product = await getCachedProduct(item.productId);
         return { ...item, product };
       })
     );
@@ -266,9 +306,9 @@ export async function setSiteContent(section, content) {
 }
 
 // ─── Contacts ─────────────────────────────────────────────────────────────────
-export async function submitContact(data) {
-  return addDoc(collection(db, 'contacts'), { ...data, createdAt: serverTimestamp() });
-}
+// NOTE: For public contact form submissions, use the Cloud Function via
+//       api.js → submitContact() which has server-side validation.
+//       The functions below are for admin reads/deletes only.
 
 export async function getAllContacts() {
   const snap = await getDocs(query(collection(db, 'contacts'), orderBy('createdAt', 'desc')));

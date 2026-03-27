@@ -1,14 +1,17 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Send, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { Send, User, Mail, Phone, MessageSquare, Loader2 } from 'lucide-react';
+import { submitContact } from '@/services/api';
 
 export default function ContactForm() {
   const sectionRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', message: '',
   });
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -20,11 +23,21 @@ export default function ContactForm() {
     return () => obs.disconnect();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API in Phase 3+
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
+    setSubmitting(true);
+    setError('');
+    try {
+      await submitContact(formData);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error('Contact form error:', err);
+      setError('Failed to send message. Please try again later.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputClass =
@@ -105,12 +118,15 @@ export default function ContactForm() {
                   />
                 </div>
 
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
                 <button
                   type="submit"
-                  className="btn-primary w-full gap-2 !py-4"
+                  disabled={submitting}
+                  className="btn-primary w-full gap-2 !py-4 disabled:opacity-70 flex justify-center items-center"
                 >
-                  <Send size={16} />
-                  Send Message
+                  {submitting ? <Loader2 size={20} className="animate-spin" /> : <Send size={16} />}
+                  {submitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             )}

@@ -1,0 +1,88 @@
+
+> acharya-ways-frontend@1.0.0 build
+> next build
+
+  Gû¦ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ G£ô Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (:String) [],    
+ RemoteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+> Build error occurred
+Error: Page 
+"/shop/[slug]" is 
+missing "generateStatic
+Params()" so it cannot 
+be used with "output: 
+export" config.
+    at C:\Users\Asus\On
+eDrive\Desktop\acharya_
+ways_new\frontend\node_
+modules\next\dist\build
+\index.js:1297:59
+    at process.processT
+icksAndRejections (node
+:internal/process/task_
+queues:104:5)
+    at async 
+Span.traceAsyncFn (C:\U
+sers\Asus\OneDrive\Desk
+top\acharya_ways_new\fr
+ontend\node_modules\nex
+t\dist\trace\trace.js:1
+54:20)
+    at async 
+Promise.all (index 23)
+    at async C:\Users\A
+sus\OneDrive\Desktop\ac
+harya_ways_new\frontend
+\node_modules\next\dist
+\build\index.js:1175:17
+    at async 
+Span.traceAsyncFn (C:\U
+sers\Asus\OneDrive\Desk
+top\acharya_ways_new\fr
+ontend\node_modules\nex
+t\dist\trace\trace.js:1
+54:20)
+    at async C:\Users\A
+sus\OneDrive\Desktop\ac
+harya_ways_new\frontend
+\node_modules\next\dist
+\build\index.js:1098:12
+4
+    at async 
+Span.traceAsyncFn (C:\U
+sers\Asus\OneDrive\Desk
+top\acharya_ways_new\fr
+ontend\node_modules\nex
+t\dist\trace\trace.js:1
+54:20)
+    at async build (C:\
+Users\Asus\OneDrive\Des
+ktop\acharya_ways_new\f
+rontend\node_modules\ne
+xt\dist\build\index.js:
+368:9)
+

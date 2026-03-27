@@ -55,8 +55,9 @@ service cloud.firestore {
 
     // ─── Journals ─────────────────────────────────────────────────
     match /journals/{journalId} {
-      allow read, write: if isAuth() && resource.data.userId == request.auth.uid;
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
       allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
     }
 
     // ─── Articles ─────────────────────────────────────────────────

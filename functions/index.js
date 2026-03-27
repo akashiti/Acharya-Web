@@ -7,6 +7,13 @@ const admin      = require('firebase-admin');
 const crypto     = require('crypto');
 const Razorpay   = require('razorpay');
 
+// Allowed origins for CORS (Firebase Hosting domains)
+const ALLOWED_ORIGINS = [
+  'https://acharya-aashish-ways.web.app',
+  'https://acharya-aashish-ways.firebaseapp.com',
+  'http://localhost:3000', // dev only
+];
+
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -229,8 +236,11 @@ exports.createOrder = functions
 exports.createRazorpayOrder = functions
   .region(REGION)
   .https.onRequest(async (req, res) => {
-    // CORS headers
-    res.set('Access-Control-Allow-Origin', '*');
+    // CORS headers — restrict to known origins
+    const origin = req.headers.origin;
+    if (ALLOWED_ORIGINS.includes(origin)) {
+      res.set('Access-Control-Allow-Origin', origin);
+    }
     res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.status(204).send('');
@@ -294,7 +304,11 @@ exports.createRazorpayOrder = functions
 exports.verifyRazorpayPayment = functions
   .region(REGION)
   .https.onRequest(async (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
+    // CORS headers — restrict to known origins
+    const origin = req.headers.origin;
+    if (ALLOWED_ORIGINS.includes(origin)) {
+      res.set('Access-Control-Allow-Origin', origin);
+    }
     res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.status(204).send('');

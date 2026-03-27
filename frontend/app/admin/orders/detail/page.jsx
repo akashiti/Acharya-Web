@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getOrderById, updateOrder } from '@/lib/firestore';
 import { ArrowLeft, Package, MapPin, CreditCard } from 'lucide-react';
@@ -13,7 +13,7 @@ function toDate(ts) {
   return new Date(ts);
 }
 
-export default function OrderDetailPage() {
+function OrderDetailContent() {
   const searchParams = useSearchParams();
   const id     = searchParams.get('id');
   const router = useRouter();
@@ -137,5 +137,13 @@ export default function OrderDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderDetailPage() {
+  return (
+    <Suspense fallback={<div className="space-y-4">{[...Array(3)].map((_, i) => <div key={i} className="h-32 bg-[#1a1a35] rounded-2xl animate-pulse" />)}</div>}>
+      <OrderDetailContent />
+    </Suspense>
   );
 }

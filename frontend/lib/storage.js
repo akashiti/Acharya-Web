@@ -2,6 +2,27 @@
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 
+// ─── Validation Constants ─────────────────────────────────────────────────────
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+];
+
+/**
+ * Validate a file before upload.
+ * @param {File} file
+ * @throws {Error} if file is invalid
+ */
+function validateFile(file) {
+  if (!file) throw new Error('No file provided.');
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum is 5MB.`);
+  }
+  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    throw new Error(`Invalid file type "${file.type}". Allowed: JPEG, PNG, GIF, WebP, SVG.`);
+  }
+}
+
 /**
  * Upload a file to Firebase Storage and return its public download URL.
  * @param {File} file - The file to upload
@@ -9,6 +30,7 @@ import { storage } from '@/lib/firebase';
  * @returns {Promise<string>} Download URL
  */
 export async function uploadFile(file, path) {
+  validateFile(file);
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, file);
   return getDownloadURL(snapshot.ref);
